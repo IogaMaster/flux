@@ -27,4 +27,6 @@
 
 --- 
 
-
+# Thanks to:
+[mcman](https://github.com/ParadigmMC/mcman)
+[steam-fetcher](https://github.com/nix-community/steam-fetcher)
