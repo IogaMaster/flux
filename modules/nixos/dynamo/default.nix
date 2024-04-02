@@ -2,16 +2,20 @@
   lib,
   config,
   ...
-}: let
+}:
+with lib;
+with lib.custom; let
   cfg = config.dynamo;
 in {
-  options.dynamo = {
-    enable = lib.mkEnableOption "";
-  };
+  options.dynamo = with types; {
+    enable = mkEnableOption "Enable dynamo";
 
-  config = lib.mkIf cfg.enable {
-    environment.variables = {
-      SNOWFALLORG_EXAMPLE = "enabled";
+    servers = {
+      # generic = {};
+      minecraft = listOf (import ./types/minecraft.nix);
+      # steam = {};
     };
   };
+
+  config = lib.mkIf cfg.enable {};
 }
