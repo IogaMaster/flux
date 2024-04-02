@@ -12,7 +12,7 @@ in {
 
     servers = {
       # generic = {};
-      minecraft = listOf (import ./types/minecraft.nix);
+      minecraft = mkOpt (nullOr (listOf (import ./types/minecraft.nix))) null "";
       # steam = {};
     };
   };

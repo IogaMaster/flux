@@ -25,5 +25,14 @@
       inherit inputs;
 
       src = ./.;
+
+      snowfall = {
+        meta = {
+          name = "dynamo";
+          title = "dynamo";
+        };
+
+        namespace = "dynamo";
+      };
     };
 }

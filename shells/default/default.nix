@@ -5,5 +5,7 @@ pkgs.mkShell {
 
     alejandra
     python310Packages.mdformat
+
+    nixos-shell
   ];
 }
