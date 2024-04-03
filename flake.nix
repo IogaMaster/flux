@@ -34,8 +34,5 @@
 
         namespace = "dynamo";
       };
-      flake = {
-        nixosModules.dynamo = import ./modules/dynamo;
-      };
     };
 }
