@@ -1,51 +1,78 @@
-{pkgs}: argsFun: let
-  wrapDerivation = f:
-    stdenv.mkDerivation (
-      finalAttrs:
-        f (lib.toFunction argsFun finalAttrs)
-    );
+{
+  lib,
+  buildFHSEnv,
+  symlinkJoin,
+  makeWrapper,
+  bash,
+  stdenv,
+  dynamo,
+  jre,
+  jre8,
+}: {
+  name ? "",
+  src ? null,
+  nativeBuildInputs ? [],
+  buildInputs ? [],
+  hash,
+  meta ? {},
+  ...
+}: let
+  server = stdenv.mkDerivation {
+    name = "server";
+    inherit src;
+
+    nativeBuildInputs =
+      [
+        dynamo.mcman
+      ]
+      ++ nativeBuildInputs;
+
+    buildPhase = ''
+      HOME=$TMPDIR
+
+      cd $src
+      mcman build -o $out
+    '';
+
+    fixupPhase = ''
+      # mainProgram requires that the start script is in $out/bin
+      # So we prepend a change of dir so start.sh can find the server files
+      mkdir -p $out/bin && mv $out/start.sh $out/bin/start.sh
+    '';
+
+    # If a fixed output derivation contains a store path ANYWHERE, it will fail to build
+    # So we tell nix not to change it
+    dontPatchShebangs = true;
+
+    # This must be a fixed output derivation in order to access the network during a build.
+    # Mcman does this to get the mod files, server jar, etc.
+    outputHashAlgo = "sha256";
+    outputHashMode = "recursive";
+    outputHash = hash;
+  };
 in
-  wrapDerivation (
-    {
-      strictDeps ? true,
-      nativeBuildInputs ? [],
-      meta ? {},
-      ...
-    } @ attrs:
-      attrs
-      // {
-        inherit strictDeps;
-        nativeBuildInputs = [zig] ++ nativeBuildInputs;
-
-        buildPhase =
-          attrs.buildPhase
-          or ''
-            runHook preBuild
-            export ZIG_GLOBAL_CACHE_DIR=$(mktemp -d)
-            zig build -Drelease-safe -Dcpu=baseline $zigBuildFlags
-            runHook postBuild
+  buildFHSEnv {
+    inherit name;
+    targetPkgs = pkgs: [
+      (symlinkJoin
+        {
+          name = "${name}-dynamo";
+          paths = [server];
+          buildInputs = [makeWrapper];
+          postBuild = ''
+            wrapProgram $out/bin/start.sh \
+              --prefix PATH : ${lib.makeBinPath [jre jre8]} \
           '';
+          meta.mainProgram = "start.sh";
+        })
+    ];
 
-        checkPhase =
-          attrs.checkPhase
-          or ''
-            runHook preCheck
-            zig build test
-            runHook postCheck
-          '';
+    extraInstallCommands = ''
+      cp -r ${server} $out
+      echo "$(cat $out/bin/start.sh)" > $out/bin/start.sh
+    '';
 
-        installPhase =
-          attrs.installPhase
-          or ''
-            runHook preInstall
-            zig build -Drelease-safe -Dcpu=baseline $zigBuildFlags --prefix $out install
-            runHook postInstall
-          '';
-
-        meta =
-          {
-            inherit (zig.meta) platforms;
-          }
-          // meta;
-      }
-  )
+    runScript = ''
+      start.sh
+    '';
+  }
