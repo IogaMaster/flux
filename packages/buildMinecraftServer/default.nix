@@ -1,9 +1,6 @@
 {
   lib,
-  buildFHSEnv,
-  symlinkJoin,
   makeWrapper,
-  bash,
   stdenv,
   dynamo,
   jre,
@@ -13,66 +10,45 @@
   src ? null,
   nativeBuildInputs ? [],
   buildInputs ? [],
-  hash,
   meta ? {},
   ...
-}: let
-  server = stdenv.mkDerivation {
-    name = "server";
-    inherit src;
+}:
+stdenv.mkDerivation {
+  name = "${name}-server";
+  inherit src;
 
-    nativeBuildInputs =
-      [
-        dynamo.mcman
-      ]
-      ++ nativeBuildInputs;
+  nativeBuildInputs =
+    [
+      makeWrapper
+    ]
+    ++ nativeBuildInputs;
 
-    buildPhase = ''
-      HOME=$TMPDIR
+  buildInputs =
+    [
+      dynamo.mcman
+      jre
+      jre8
+    ]
+    ++ buildInputs;
 
-      cd $src
-      mcman build -o $out
-    '';
+  installPhase = ''
+    mkdir -p $out/bin
 
-    fixupPhase = ''
-      # mainProgram requires that the start script is in $out/bin
-      # So we prepend a change of dir so start.sh can find the server files
-      mkdir -p $out/bin && mv $out/start.sh $out/bin/start.sh
-    '';
+    cat << EOF > $out/bin/start.sh
+      DIRECTORY="/srv/minecraft/${name}-server"
+      if [ ! -d \$DIRECTORY ]; then
+          cd $src
+          mkdir -p \$DIRECTORY
+          mcman build -o \$DIRECTORY
+      fi
+      cd \$DIRECTORY
+      \$(\$DIRECTORY/start.sh)
+    EOF
+    chmod +x $out/bin/start.sh
 
-    # If a fixed output derivation contains a store path ANYWHERE, it will fail to build
-    # So we tell nix not to change it
-    dontPatchShebangs = true;
+    wrapProgram $out/bin/start.sh \
+      --prefix PATH : ${lib.makeBinPath [jre jre8]} \
+  '';
 
-    # This must be a fixed output derivation in order to access the network during a build.
-    # Mcman does this to get the mod files, server jar, etc.
-    outputHashAlgo = "sha256";
-    outputHashMode = "recursive";
-    outputHash = hash;
-  };
-in
-  buildFHSEnv {
-    inherit name;
-    targetPkgs = pkgs: [
-      (symlinkJoin
-        {
-          name = "${name}-dynamo";
-          paths = [server];
-          buildInputs = [makeWrapper];
-          postBuild = ''
-            wrapProgram $out/bin/start.sh \
-              --prefix PATH : ${lib.makeBinPath [jre jre8]} \
-          '';
-          meta.mainProgram = "start.sh";
-        })
-    ];
-
-    extraInstallCommands = ''
-      cp -r ${server} $out
-      echo "$(cat $out/bin/start.sh)" > $out/bin/start.sh
-    '';
-
-    runScript = ''
-      start.sh
-    '';
-  }
+  meta.mainProgram = "start.sh";
+}
