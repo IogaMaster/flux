@@ -11,6 +11,7 @@
   src ? null,
   nativeBuildInputs ? [],
   buildInputs ? [],
+  extraSetupCommands ? "",
   hash,
   meta ? {},
   ...
@@ -70,6 +71,8 @@
         if [ ! -d \$DIRECTORY ]; then
             mkdir -p \$DIRECTORY
             cp -r ${serverBuild}/. \$DIRECTORY
+            cd \$DIRECTORY
+            ${extraSetupCommands}
         fi
         cd \$DIRECTORY
         ./start.sh
