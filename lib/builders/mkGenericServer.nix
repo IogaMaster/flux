@@ -28,7 +28,7 @@
     inherit src buildInputs;
 
     nativeBuildInputs = with pkgs; [
-      wrapProgram
+      makeWrapper
     ];
 
     installPhase = ''
