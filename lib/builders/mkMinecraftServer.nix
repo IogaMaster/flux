@@ -51,7 +51,7 @@
         if [ -n "\$1" ]; then
             DIRECTORY="\$1"
         else
-            DIRECTORY="."
+            DIRECTORY="${name}"
         fi
         if [ ! -d \$DIRECTORY ]; then
             mkdir -p \$DIRECTORY
