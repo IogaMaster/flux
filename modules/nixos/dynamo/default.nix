@@ -65,5 +65,31 @@ in {
     };
   };
 
-  config = lib.mkIf cfg.enable {};
+  config = lib.mkIf cfg.enable {
+    users.users.dynamo = {
+      home = "/var/lib/dynamo";
+      createHome = true;
+      isSystemUser = true;
+      group = "dynamo";
+    };
+    users.groups.dynamo = {};
+
+    systemd.services =
+      lib.mapAttrs (name: conf: {
+        name = "dynamo-${name}";
+        wantedBy = ["multi-user.target"];
+        after = ["network.target"];
+
+        script = ''
+          ${conf.package}/bin/start.sh "/var/lib/dynamo/${name}"
+        '';
+        serviceConfig = {
+          Nice = "-5";
+          Restart = "always";
+          User = "dynamo";
+          WorkingDirectory = "/var/lib/dynamo/${name}";
+        };
+      })
+      cfg.server;
+  };
 }

@@ -9,9 +9,6 @@
 }: {
   name ? "",
   src ? null,
-  nativeBuildInputs ? [],
-  buildInputs ? [],
-  extraSetupCommands ? "",
   hash,
   meta ? {},
   ...
@@ -19,13 +16,11 @@
   serverBuild = stdenv.mkDerivation {
     name = "${name}-serverBuild";
     inherit src;
-    nativeBuildInputs =
-      [
-        dynamo.mcman
-        jre
-        jre8
-      ]
-      ++ nativeBuildInputs;
+    nativeBuildInputs = [
+      dynamo.mcman
+      jre
+      jre8
+    ];
 
     buildPhase = ''
       HOME=$TMPDIR
@@ -49,30 +44,24 @@
     name = "${name}-serverRuntime";
     inherit src;
 
-    nativeBuildInputs =
-      [
-        makeWrapper
-      ]
-      ++ nativeBuildInputs;
-
-    buildInputs =
-      [
-        dynamo.mcman
-        jre
-        jre8
-      ]
-      ++ buildInputs;
+    buildInputs = [
+      jre
+      jre8
+    ];
 
     installPhase = ''
       mkdir -p $out/bin
 
       cat << EOF > $out/bin/start.sh
-        DIRECTORY="\$XDG_DATA_HOME/dynamo/servers/minecraft/${name}"
+        if [ -n "\$1" ]; then
+            DIRECTORY="\$1"
+        else
+            DIRECTORY="."
+        fi
         if [ ! -d \$DIRECTORY ]; then
             mkdir -p \$DIRECTORY
             cp -r ${serverBuild}/. \$DIRECTORY
             cd \$DIRECTORY
-            ${extraSetupCommands}
         fi
         cd \$DIRECTORY
         ./start.sh
