@@ -15,7 +15,7 @@ in {
       '';
     };
 
-    server = mkOption {
+    servers = mkOption {
       default = {};
       type = types.submodule {
         options = {
@@ -90,6 +90,6 @@ in {
           WorkingDirectory = "/var/lib/dynamo/${name}";
         };
       })
-      cfg.server;
+      cfg.servers;
   };
 }
