@@ -17,7 +17,7 @@ in {
 
     servers = mkOption {
       default = {};
-      type = types.submodule {
+      type = types.attrsOf (types.submodule {
         options = {
           enable = mkOption {
             type = types.bool;
@@ -61,7 +61,7 @@ in {
             };
           };
         };
-      };
+      });
     };
   };
 
