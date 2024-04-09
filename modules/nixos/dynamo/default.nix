@@ -76,10 +76,9 @@ in {
 
     systemd.services =
       lib.mapAttrs (name: conf: {
-        name = "dynamo-${name}";
+        description = "Dynamo Server ${name}";
         wantedBy = ["multi-user.target"];
         after = ["network.target"];
-
         script = ''
           ${conf.package}/bin/start.sh "/var/lib/dynamo/${name}"
         '';
