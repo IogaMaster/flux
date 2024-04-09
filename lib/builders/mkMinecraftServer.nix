@@ -55,8 +55,14 @@
         fi
         if [ ! -d \$DIRECTORY ]; then
             mkdir -p \$DIRECTORY
+        fi
+
+        if find "\$DIRECTORY" -mindepth 1 -maxdepth 1 | read; then
+           echo "dir not empty"
+        else
             cp -r ${serverBuild}/. \$DIRECTORY
         fi
+
         cd \$DIRECTORY
         ./start.sh
       EOF
