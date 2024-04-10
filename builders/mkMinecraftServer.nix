@@ -34,7 +34,7 @@ mkGenericServer {
     mcman build -o $out
   '';
 
-  startCmd = "start.sh";
+  startCmd = "./start.sh";
 
   meta = {
     sourceProvenance = with lib.sourceTypes; [

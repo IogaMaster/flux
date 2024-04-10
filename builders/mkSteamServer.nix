@@ -24,7 +24,7 @@ mkGenericServer {
     cp -r . $out
   '';
 
-  startCmd = "${steam-run}/bin/steam-run ${startCmd}";
+  startCmd = "${steam-run}/bin/steam-run ./${startCmd}";
 
   meta = {
     sourceProvenance = with lib.sourceTypes; [

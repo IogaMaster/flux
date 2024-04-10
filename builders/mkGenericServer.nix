@@ -59,7 +59,7 @@
         echo ${serverBuild} > \$DIRECTORY/.hash
 
         cd \$DIRECTORY
-        ./${startCmd}
+        ${startCmd}
       EOF
       chmod +x $out/bin/runServer.sh
 
