@@ -32,4 +32,12 @@ mkGenericServer pkgs {
   '';
 
   startCmd = "start.sh";
+
+  meta = {
+    sourceProvenance = with lib.sourceTypes; [
+      binaryNativeCode
+      binaryBytecode
+    ];
+    license = lib.licenses.unfreeRedistributable;
+  };
 }
