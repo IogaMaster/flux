@@ -37,14 +37,14 @@
     nixosModules.default = nixosModules.flux;
 
     overlays.default = final: prev: {
-
       mcman = final.callPackage ./pkgs/mcman {};
       playit = final.callPackage ./pkgs/playit {};
 
       mkGenericServer = final.callPackage ./builders/mkGenericServer.nix {};
       mkMinecraftServer = final.callPackage ./builders/mkMinecraftServer.nix {};
+      mkSteamServer = final.callPackage ./builders/mkSteamServer.nix {};
 
-      fetchSteam = final.callPackage (steam-fetcher+"/fetch-steam") {};
+      fetchSteam = final.callPackage (steam-fetcher + "/fetch-steam") {};
     };
   };
 }
