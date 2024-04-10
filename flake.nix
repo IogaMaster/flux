@@ -33,8 +33,8 @@
       playit = pkgs.callPackage ./pkgs/playit {};
     });
 
-    nixosModules.dynamo = ./modules/dynamo;
-    nixosModules.default = nixosModules.dynamo;
+    nixosModules.flux = ./modules/flux;
+    nixosModules.default = nixosModules.flux;
 
     overlays.default = final: prev: {
 

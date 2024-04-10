@@ -4,14 +4,14 @@
   ...
 }:
 with lib; let
-  cfg = config.dynamo;
+  cfg = config.flux;
 in {
-  options.dynamo = with types; {
+  options.flux = with types; {
     enable = mkOption {
       type = types.bool;
       default = false;
       description = lib.mdDoc ''
-        Whether to enable dynamo.
+        Whether to enable flux.
       '';
     };
 
@@ -66,24 +66,24 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
-    users.users.dynamo = {
-      home = "/var/lib/dynamo";
+    users.users.flux = {
+      home = "/var/lib/flux";
       createHome = true;
       isSystemUser = true;
-      group = "dynamo";
+      group = "flux";
     };
-    users.groups.dynamo = {};
+    users.groups.flux = {};
 
     systemd.tmpfiles.rules =
       lib.mapAttrsToList
       (
-        name: _: "d '/var/lib/dynamo/${name}' 0770 dynamo dynamo - -"
+        name: _: "d '/var/lib/flux/${name}' 0770 flux flux - -"
       )
       cfg.servers;
 
     systemd.services =
       lib.mapAttrs (name: conf: {
-        description = "Dynamo Server ${name}";
+        description = "Flux Server ${name}";
         wantedBy = ["multi-user.target"];
         after = ["network.target"];
         script = ''
@@ -92,9 +92,9 @@ in {
         serviceConfig = {
           Nice = "-5";
           Restart = "always";
-          User = "dynamo";
-          group = "dynamo";
-          WorkingDirectory = "/var/lib/dynamo";
+          User = "flux";
+          group = "flux";
+          WorkingDirectory = "/var/lib/flux";
         };
       })
       cfg.servers;
