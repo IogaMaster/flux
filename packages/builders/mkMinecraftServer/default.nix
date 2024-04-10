@@ -1,7 +1,6 @@
 {
   lib,
   pkgs,
-  mkGenericServer,
 }: {
   name ? "",
   src ? null,
@@ -9,7 +8,7 @@
   meta ? {},
   ...
 }:
-mkGenericServer pkgs {
+pkgs.dynamo.mkGenericServer {
   inherit name src hash;
 
   nativeBuildInputs = with pkgs; [

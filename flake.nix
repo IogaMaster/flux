@@ -20,7 +20,13 @@
     };
   };
 
-  outputs = inputs:
+  outputs = inputs @ {
+    self,
+    nixpkgs,
+    snowfall-lib,
+    steam-fetcher,
+    mcman,
+  }:
     inputs.snowfall-lib.mkFlake {
       inherit inputs;
 
@@ -33,6 +39,13 @@
         };
 
         namespace = "dynamo";
+      };
+    }
+    // {
+      overlays = let
+        allOverlays = builtins.attrValues self.overlays;
+      in {
+        default = final: prev: builtins.map (overlay: overlay final prev) allOverlays;
       };
     };
 }
