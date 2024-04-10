@@ -87,7 +87,7 @@ in {
         wantedBy = ["multi-user.target"];
         after = ["network.target"];
         script = ''
-          ${conf.package}/bin/start.sh
+          ${conf.package}/bin/*
         '';
         serviceConfig = {
           Nice = "-5";
@@ -95,27 +95,6 @@ in {
           User = "dynamo";
           group = "dynamo";
           WorkingDirectory = "/var/lib/dynamo";
-
-          # Hardening
-          CapabilityBoundingSet = [""];
-          DeviceAllow = [""];
-          LockPersonality = true;
-          PrivateDevices = true;
-          PrivateTmp = true;
-          PrivateUsers = true;
-          ProtectClock = true;
-          ProtectControlGroups = true;
-          ProtectHome = true;
-          ProtectHostname = true;
-          ProtectKernelLogs = true;
-          ProtectKernelModules = true;
-          ProtectKernelTunables = true;
-          ProtectProc = "invisible";
-          RestrictNamespaces = true;
-          RestrictRealtime = true;
-          RestrictSUIDSGID = true;
-          SystemCallArchitectures = "native";
-          UMask = "0007";
         };
       })
       cfg.servers;

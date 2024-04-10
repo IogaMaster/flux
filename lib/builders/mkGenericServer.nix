@@ -34,32 +34,37 @@
     installPhase = ''
       mkdir -p $out/bin
 
-      cat << EOF > $out/bin/start.sh
-        if [ -n "\$1" ]; then
-            DIRECTORY="\$1"
-        else
-            DIRECTORY="${name}"
-        fi
+      cat << EOF > $out/bin/runServer.sh
+        DIRECTORY="${name}"
+
         if [ ! -d \$DIRECTORY ]; then
             mkdir -p \$DIRECTORY
         fi
 
+        # If the DIRECTORY is not empty then run a hash check otherwise setup
         if find "\$DIRECTORY" -mindepth 1 -maxdepth 1 | read; then
-           echo "dir not empty"
+          # if not empty check if the hashfile exists and matches the build hash, if it doesn't then recreate the server
+          if [ -f "\$DIRECTORY/.hash" ] && ! grep -qF "${serverBuild}" "\$DIRECTORY/.hash"; then
+            rm -rf \$DIRECTORY
+            mkdir -p \$DIRECTORY
+            cp -r ${serverBuild}/. \$DIRECTORY
+          fi
         else
             cp -r ${serverBuild}/. \$DIRECTORY
         fi
 
+        echo ${serverBuild} > \$DIRECTORY/.hash
+
         cd \$DIRECTORY
         ./${startCmd}
       EOF
-      chmod +x $out/bin/start.sh
+      chmod +x $out/bin/runServer.sh
 
-      wrapProgram $out/bin/start.sh \
+      wrapProgram $out/bin/runServer.sh \
         --prefix PATH : ${lib.makeBinPath buildInputs} \
     '';
 
-    meta.mainProgram = "start.sh";
+    meta.mainProgram = "runServer.sh";
   };
 in
   pkgs.buildFHSEnv {
@@ -69,6 +74,6 @@ in
     ];
 
     runScript = ''
-      start.sh
+      runServer.sh
     '';
   }
