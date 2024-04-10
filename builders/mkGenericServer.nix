@@ -1,6 +1,9 @@
 {
   lib,
-  pkgs,
+  stdenv,
+  makeWrapper,
+  buildFHSEnv,
+  ...
 }: {
   name ? "",
   src ? null,
@@ -15,7 +18,7 @@
   meta ? {},
   ...
 }: let
-  serverBuild = pkgs.stdenv.mkDerivation {
+  serverBuild = stdenv.mkDerivation {
     name = "${name}-build";
     inherit src nativeBuildInputs buildInputs buildPhase installPhase outputHashAlgo outputHashMode;
 
@@ -23,11 +26,11 @@
     outputHash = hash;
   };
 
-  serverRuntime = pkgs.stdenv.mkDerivation {
+  serverRuntime = stdenv.mkDerivation {
     name = "${name}-runtime";
     inherit src buildInputs;
 
-    nativeBuildInputs = with pkgs; [
+    nativeBuildInputs = [
       makeWrapper
     ];
 
@@ -67,7 +70,7 @@
     meta.mainProgram = "runServer.sh";
   };
 in
-  pkgs.buildFHSEnv {
+  buildFHSEnv {
     inherit name;
     targetPkgs = pkgs: [
       serverRuntime
