@@ -18,28 +18,7 @@
     },
     "root": {
       "inputs": {
-        "nixpkgs": "nixpkgs",
-        "steam-fetcher": "steam-fetcher"
-      }
-    },
-    "steam-fetcher": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1703704267,
-        "narHash": "sha256-X44wqMWyaMsymcrgxwlnEWDplcop54e3eopfJ/p+S3s=",
-        "owner": "nix-community",
-        "repo": "steam-fetcher",
-        "rev": "aa223d3d03fd60a7b9f20831a06776ca0f1b3630",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-community",
-        "repo": "steam-fetcher",
-        "type": "github"
+        "nixpkgs": "nixpkgs"
       }
     }
   },

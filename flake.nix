@@ -3,17 +3,9 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
-    steam-fetcher = {
-      url = "github:nix-community/steam-fetcher";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
-  outputs = {
-    nixpkgs,
-    steam-fetcher,
-    ...
-  }: let
+  outputs = {nixpkgs, ...}: let
     forAllSystems = function:
       nixpkgs.lib.genAttrs [
         "x86_64-linux"
@@ -44,7 +36,7 @@
       mkMinecraftServer = final.callPackage ./builders/mkMinecraftServer.nix {};
       mkSteamServer = final.callPackage ./builders/mkSteamServer.nix {};
 
-      fetchSteam = final.callPackage (steam-fetcher + "/fetch-steam") {};
+      fetchSteam = final.callPackage ./helpers/fetchSteam {};
     };
   };
 }
