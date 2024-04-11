@@ -60,6 +60,7 @@
         echo ${serverBuild} > \$DIRECTORY/.hash
 
         cd \$DIRECTORY
+        chmod 755 -R .
         ${startCmd}
       EOF
       chmod +x $out/bin/runServer.sh
