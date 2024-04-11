@@ -1,6 +1,7 @@
 {
   lib,
   config,
+  pkgs,
   ...
 }:
 with lib; let
@@ -86,7 +87,15 @@ in {
         description = "Flux Server ${name}";
         wantedBy = ["multi-user.target"];
         after = ["network.target"];
-        script = ''
+        script = let
+          proxyCommand =
+            if conf.proxy.enable
+            then ''
+              ${pkgs.playit}/bin/playit-cli -s &
+            ''
+            else "";
+        in ''
+          ${proxyCommand}
           ${conf.package}/bin/*
         '';
         serviceConfig = {
