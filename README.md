@@ -2,8 +2,7 @@
 
 <h1 align="center">
 <a href='#'><img src="https://raw.githubusercontent.com/catppuccin/catppuccin/main/assets/palette/macchiato.png" width="600px"/></a>
-  <br>
-  <br>
+  <br> <br>
   <div>
     <a href="https://github.com/IogaMaster/flux/issues">
         <img src="https://img.shields.io/github/issues/IogaMaster/flux?color=fab387&labelColor=303446&style=for-the-badge">
@@ -196,7 +195,6 @@ pkgs.mkSteamServer rec {
 
 There is still a lot to do.
 
-- Making certain steam servers run (satisfactory)
 - Adding the proxies
 - Examples
 
