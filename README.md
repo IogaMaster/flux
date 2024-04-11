@@ -195,7 +195,6 @@ pkgs.mkSteamServer rec {
 
 There is still a lot to do.
 
-- Adding the proxies
 - Examples
 
 ## ❤️ Contributing
