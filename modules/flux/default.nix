@@ -44,7 +44,7 @@ in {
               '';
             };
 
-            token = mkOption {
+            tokenFile = mkOption {
               type = types.str;
               default = null;
               description = lib.mdDoc ''
@@ -96,14 +96,14 @@ in {
               then "${pkgs.playit}/bin/playit-cli -s &"
               else if (conf.proxy.backend == "ngrok")
               then "${
-                if (conf.proxy.token != null)
-                then "NGROK_AUTHTOKEN=\$(cat ${conf.proxy.token})"
+                if (conf.proxy.tokenFile != null)
+                then "NGROK_AUTHTOKEN=\$(cat ${conf.proxy.tokenFile})"
                 else ""
               } ${pkgs.ngrok}/bin/ngrok tcp ${portString} --log stdout &"
               else if (conf.proxy.backend == "cloudflare")
               then "${
-                if (conf.proxy.token != null)
-                then "TUNNEL_TOKEN=\$(cat ${conf.proxy.token})"
+                if (conf.proxy.tokenFile != null)
+                then "TUNNEL_TOKEN=\$(cat ${conf.proxy.tokenFile})"
                 else ""
               } ${pkgs.cloudflared}/bin/cloudflared tunnel --no-autoupdate run &"
               else ""
