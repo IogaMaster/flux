@@ -88,19 +88,24 @@ in {
         wantedBy = ["multi-user.target"];
         after = ["network.target"];
         script = let
+          portString = builtins.toString conf.proxy.port;
           proxyCommand =
             if conf.proxy.enable
             then
               if (conf.proxy.backend == "playit")
               then "${pkgs.playit}/bin/playit-cli -s &"
               else if (conf.proxy.backend == "ngrok")
-              then ""
-              else if (conf.proxy.backend == "cloudflare")
-              then "${pkgs.cloudflared}/bin/cloudflared tunnel ${
-                if (conf.proxy.tokenFile != null)
-                then "--cred-file ${conf.proxy.tokenFile}"
+              then "${
+                if (conf.proxy.token != null)
+                then "NGROK_AUTHTOKEN=\$(cat ${conf.proxy.token})"
                 else ""
-              } --url localhost:${conf.proxy.port} &"
+              } ${pkgs.ngrok}/bin/ngrok tcp ${portString} --log stdout &"
+              else if (conf.proxy.backend == "cloudflare")
+              then "${
+                if (conf.proxy.token != null)
+                then "TUNNEL_TOKEN=\$(cat ${conf.proxy.token})"
+                else ""
+              } ${pkgs.cloudflared}/bin/cloudflared tunnel --no-autoupdate run &"
               else ""
             else "";
         in ''
