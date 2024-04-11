@@ -141,7 +141,7 @@ pkgs.mkMinecraftServer {
    name = "myminecraftserver";
    src = ./mcmanconfig; # Path to a mcman config
    hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
-};
+}
 ```
 
 Example generic server:
@@ -178,9 +178,10 @@ mkGenericServer {
 Example steam server:
 ```nix
 {lib, pkgs, ... }: 
-pkgs.mkSteamServer {
-   name = "mygameserver";;
+pkgs.mkSteamServer rec {
+   name = "mygameserver";
    src = pkgs.fetchSteam {
+       inherit name;
        appId = ""; # Dedicated server app id, can be found with https://steamdb.info/
        hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
    };
@@ -188,7 +189,7 @@ pkgs.mkSteamServer {
    startCmd = "./FactoryServer.sh";
 
    hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
-};
+}
 ```
 
 ## 🔨 TODO
