@@ -46,9 +46,9 @@ in {
 
             token = mkOption {
               type = types.str;
-              default = "";
+              default = null;
               description = lib.mdDoc ''
-                Token to use for the proxy.
+                Path to file containing token to use for the proxy.
                 Needed for the `ngrok` and `cloudflare` backend.
               '';
             };
@@ -90,9 +90,18 @@ in {
         script = let
           proxyCommand =
             if conf.proxy.enable
-            then ''
-              ${pkgs.playit}/bin/playit-cli -s &
-            ''
+            then
+              if (conf.proxy.backend == "playit")
+              then "${pkgs.playit}/bin/playit-cli -s &"
+              else if (conf.proxy.backend == "ngrok")
+              then ""
+              else if (conf.proxy.backend == "cloudflare")
+              then "${pkgs.cloudflared}/bin/cloudflared tunnel ${
+                if (conf.proxy.tokenFile != null)
+                then "--cred-file ${conf.proxy.tokenFile}"
+                else ""
+              } --url localhost:${conf.proxy.port} &"
+              else ""
             else "";
         in ''
           ${proxyCommand}
