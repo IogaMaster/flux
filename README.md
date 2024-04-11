@@ -33,6 +33,9 @@ With flux you can build servers as packages with a simple interface and deploy t
     - 🏭 Runs the server
     - 🌐 Sets up proxy (playit.gg, ngrok, cloudflare tunnels)
     - 🫙 Works great on host, nixos-containers, and microvms
+- 📦 Packages not present in nixpkgs (yet) that are useful for servers.
+    - [mcman](https://github.com/ParadigmMC/mcman)
+    - [playit](https://playit.gg/)
 
 #### Why?
 
