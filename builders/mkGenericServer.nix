@@ -14,13 +14,14 @@
   startCmd ? "",
   outputHashAlgo ? "sha256",
   outputHashMode ? "recursive",
+  dontPatchELF ? false,
   hash ? "",
   meta ? {},
   ...
 }: let
   serverBuild = stdenv.mkDerivation {
     name = "${name}-build";
-    inherit src nativeBuildInputs buildInputs buildPhase installPhase outputHashAlgo outputHashMode;
+    inherit src nativeBuildInputs buildInputs buildPhase installPhase outputHashAlgo outputHashMode dontPatchELF;
 
     dontPatchShebangs = true;
     outputHash = hash;

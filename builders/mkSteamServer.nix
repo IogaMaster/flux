@@ -24,6 +24,8 @@ mkGenericServer {
     cp -r . $out
   '';
 
+  dontPatchELF = true; # Dynamic libraries need to be present in steam servers. Which patchelf removes.
+
   startCmd = "${steam-run}/bin/steam-run ./${startCmd}";
 
   meta = {
@@ -33,10 +35,4 @@ mkGenericServer {
     ];
     license = lib.licenses.unfree;
   };
-}
-// {
-  # Overrides
-  dontBuild = true;
-  dontConfigure = true;
-  dontFixup = true;
 }
