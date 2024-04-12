@@ -16,13 +16,14 @@
   outputHashMode ? "recursive",
   config ? "",
   dontPatchELF ? false,
+  dontUnpack ? false,
   hash ? "",
   meta ? {},
   ...
 }: let
   serverBuild = stdenv.mkDerivation {
     name = "${name}-build";
-    inherit src nativeBuildInputs buildInputs buildPhase installPhase outputHashAlgo outputHashMode dontPatchELF;
+    inherit src nativeBuildInputs buildInputs buildPhase installPhase outputHashAlgo outputHashMode dontPatchELF dontUnpack;
 
     dontPatchShebangs = true;
     outputHash = hash;
@@ -30,7 +31,7 @@
 
   serverRuntime = stdenv.mkDerivation {
     name = "${name}-runtime";
-    inherit src buildInputs;
+    inherit src buildInputs dontUnpack;
 
     nativeBuildInputs = [
       makeWrapper
