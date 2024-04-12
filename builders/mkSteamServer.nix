@@ -11,12 +11,13 @@
   buildInputs ? [],
   buildPhase ? "",
   installPhase ? "",
+  config ? "",
   startCmd ? "",
   meta ? {},
   ...
 }:
 mkGenericServer {
-  inherit name src hash nativeBuildInputs buildInputs buildPhase;
+  inherit name src hash nativeBuildInputs buildInputs buildPhase config;
 
   installPhase = ''
     mkdir -p $out
