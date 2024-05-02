@@ -14,7 +14,6 @@
   startCmd ? "",
   outputHashAlgo ? "sha256",
   outputHashMode ? "recursive",
-  config ? "",
   dontPatchELF ? false,
   dontUnpack ? false,
   hash ? "",
@@ -54,11 +53,9 @@
             rm -rf \$DIRECTORY
             mkdir -p \$DIRECTORY
             cp -r ${serverBuild}/. \$DIRECTORY
-            cp -r ${config}/. \$DIRECTORY
           fi
         else
             cp -r ${serverBuild}/. \$DIRECTORY
-            cp -r ${config}/. \$DIRECTORY
         fi
 
         echo ${serverBuild} > \$DIRECTORY/.hash
