@@ -51,10 +51,7 @@ Installation is simple:
    ```
 2. Add the exposed overlay to your global pkgs definition, so the builder functions are available.
    ```nix
-   pkgs = import nixpkgs {
-     inherit system;
-     overlays = [flux.overlays.default];
-   };
+    nixpkgs.overlays = [ flux.overlays.default ];
    ```
 3. Import the NixOS module `flux.nixosModules.default` in your host config.
    ```nix
