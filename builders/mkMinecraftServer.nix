@@ -29,6 +29,7 @@ mkGenericServer {
 
   buildPhase = ''
     HOME=$TMPDIR
+    CI=true # Better build logs
 
     cd $src
     mcman build -o $out
