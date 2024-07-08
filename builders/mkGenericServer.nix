@@ -46,17 +46,7 @@
             mkdir -p \$DIRECTORY
         fi
 
-        # If the DIRECTORY is not empty then run a hash check otherwise setup
-        if find "\$DIRECTORY" -mindepth 1 -maxdepth 1 | read; then
-          # if not empty check if the hashfile exists and matches the build hash, if it doesn't then recreate the server
-          if [ -f "\$DIRECTORY/.hash" ] && ! grep -qF "${serverBuild}" "\$DIRECTORY/.hash"; then
-            rm -rf \$DIRECTORY
-            mkdir -p \$DIRECTORY
-            cp -r ${serverBuild}/. \$DIRECTORY
-          fi
-        else
-            cp -r ${serverBuild}/. \$DIRECTORY
-        fi
+        cp -r ${serverBuild}/. \$DIRECTORY
 
         echo ${serverBuild} > \$DIRECTORY/.hash
 
