@@ -10,13 +10,13 @@
 }:
 rustPlatform.buildRustPackage rec {
   pname = "mcman";
-  version = "0.4.5";
+  version = "c22e50714254d02670a3678e3965ff70a4b86c5c";
 
   src = fetchFromGitHub {
     owner = "ParadigmMC";
     repo = "mcman";
     rev = version;
-    hash = "sha256-/WIm2MFj2++QVCATDkYz2h4Jm+0RzxzVFIYrZubEgIQ=";
+    hash = "sha256-Z3nKgHVRuACHSVJ/ju+qTTWx2vaOjSqXCUp24j1JGf8=";
   };
 
   cargoLock = {
