@@ -15,6 +15,11 @@ in {
         Whether to enable flux.
       '';
     };
+    dataDir = mkOption {
+      type = types.path;
+      default = "/var/lib/flux";
+      description = "The data directory for flux.";
+    };
 
     servers = mkOption {
       default = {};
@@ -68,7 +73,7 @@ in {
 
   config = lib.mkIf cfg.enable {
     users.users.flux = {
-      home = "/var/lib/flux";
+      home = cfg.dataDir;
       createHome = true;
       isSystemUser = true;
       group = "flux";
@@ -78,7 +83,7 @@ in {
     systemd.tmpfiles.rules =
       lib.mapAttrsToList
       (
-        name: _: "d '/var/lib/flux/${name}' 0770 flux flux - -"
+        name: _: "d '${cfg.dataDir}/${name}' 0770 flux flux - -"
       )
       cfg.servers;
 
@@ -117,7 +122,7 @@ in {
           Restart = "always";
           User = "flux";
           group = "flux";
-          WorkingDirectory = "/var/lib/flux";
+          WorkingDirectory = cfg.dataDir;
         };
       })
       cfg.servers;
