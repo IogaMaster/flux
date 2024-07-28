@@ -8,12 +8,13 @@
 }: {
   name ? "",
   src ? null,
+  serverLocation ? null,
   hash ? "",
   meta ? {},
   ...
 }:
 mkGenericServer {
-  inherit name src hash;
+  inherit name src serverLocation hash;
 
   nativeBuildInputs = [
     mcman
@@ -26,14 +27,18 @@ mkGenericServer {
     jre
     jre8
   ];
-
-  buildPhase = ''
-    HOME=$TMPDIR
-    CI=true # Better build logs
-
-    cd $src
-    mcman build -o $out
-  '';
+  buildPhase =
+    ''
+      HOME=$TMPDIR
+      CI=true # Better build logs
+      cd $src
+    ''
+    + lib.optionalString (serverLocation != null) ''
+      cd ${serverLocation}
+    ''
+    + ''
+      mcman build -o $out
+    '';
 
   startCmd = "./start.sh";
 
