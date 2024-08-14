@@ -32,7 +32,8 @@ mkGenericServer {
     CI=true # Better build logs
 
     cd $src
-    mcman build -o $out
+    mcman build -o server_build
+    cp -r $src/server_build $out
   '';
 
   startCmd = "./start.sh";
