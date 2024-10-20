@@ -7,16 +7,16 @@
 }:
 rustPlatform.buildRustPackage rec {
   pname = "playit";
-  version = "0.15.13";
+  version = "0.15.26";
 
   src = fetchFromGitHub {
     owner = "playit-cloud";
     repo = "playit-agent";
     rev = "v${version}";
-    hash = "sha256-RRN0KAgFVXQGU6LdNWClBFlqO+Nl4SMNXDWfV0lOhAE=";
+    hash = "sha256-zmiv007/am9KnxpauelNNrfdJuJSqmDspLKqP6pCjIs=";
   };
 
-  cargoHash = "sha256-PMaDU/6Y/t78uJ98qKGc+4WDX18SPN8PwLZqOqYW4yo=";
+  cargoHash = "sha256-HIwoPmxMvq3zlhzqSNKZVnWUxW9jE6c0lzztmSYpHzM=";
 
   buildInputs = lib.optionals stdenv.isDarwin [
     darwin.apple_sdk.frameworks.Security
