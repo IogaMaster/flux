@@ -3,7 +3,6 @@
   mkGenericServer,
   mcman,
   jre,
-  jre8,
   ...
 }: {
   name ? "",
@@ -11,6 +10,7 @@
   serverLocation ? null,
   hash ? "",
   meta ? {},
+  java ? jre,
   ...
 }:
 mkGenericServer {
@@ -18,14 +18,12 @@ mkGenericServer {
 
   nativeBuildInputs = [
     mcman
-    jre
-    jre8
+    java
   ];
 
   buildInputs = [
     mcman
-    jre
-    jre8
+    java
   ];
   buildPhase =
     ''
