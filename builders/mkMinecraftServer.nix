@@ -31,13 +31,17 @@ mkGenericServer {
     ''
       HOME=$TMPDIR
       CI=true # Better build logs
-      cd $src
     ''
     + lib.optionalString (serverLocation != null) ''
       cd ${serverLocation}
     ''
     + ''
       mcman build -o $out
+    '';
+
+  installPhase =
+    ''
+      rm -vf $out/{,.}*.log
     '';
 
   startCmd = "./start.sh";
