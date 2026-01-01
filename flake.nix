@@ -6,20 +6,24 @@
     mcman.url = "github:deniz-blue/mcman";
   };
 
-  outputs = { nixpkgs, ... }@inputs:
+  outputs = { self, nixpkgs, ... }@inputs:
     let
       inherit (nixpkgs) lib;
-      forAllSystems = function:
-        nixpkgs.lib.genAttrs [ "x86_64-linux" "aarch64-linux" ]
-        (system: function nixpkgs.legacyPackages.${system});
+      forAllSystems = nixpkgs.lib.genAttrs [ "x86_64-linux" "aarch64-linux" ];
+      pkgsAllSystems = function:
+        forAllSystems (system: function nixpkgs.legacyPackages.${system});
     in rec {
-      devShells = forAllSystems (pkgs: {
-        default =
-          pkgs.mkShell { nativeBuildInputs = with pkgs; [ alejandra ]; };
+      devShells = pkgsAllSystems (pkgs: {
+        default = pkgs.mkShell {
+          nativeBuildInputs = with pkgs; [
+            alejandra
+            inputs.mcman.packages.${pkgs.stdenv.hostPlatform.system}.mcman
+          ];
+        };
       });
 
-      packages = lib.recursiveUpdate
-        (forAllSystems (pkgs: { playit = pkgs.callPackage ./pkgs/playit { }; }))
+      packages = lib.recursiveUpdate (pkgsAllSystems
+        (pkgs: { playit = pkgs.callPackage ./pkgs/playit { }; }))
         inputs.mcman.packages;
 
       nixosModules.flux = ./modules/flux;
@@ -37,5 +41,14 @@
 
         fetchSteam = final.callPackage ./helpers/fetchSteam { };
       };
+
+      checks = forAllSystems (system:
+        let
+          checkArgs = {
+            pkgs = nixpkgs.legacyPackages.${system};
+            inherit self;
+          };
+        in { minecraft-basic = import ./tests/minecraft/basic checkArgs; });
+
     };
 }
