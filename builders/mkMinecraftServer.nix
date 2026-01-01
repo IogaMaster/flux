@@ -1,26 +1,9 @@
-{
-  lib,
-  mkGenericServer,
-  mcman,
-  jre,
-  jre8,
-  ...
-}: {
-  name ? "",
-  src ? null,
-  serverLocation ? null,
-  hash ? "",
-  meta ? {},
-  ...
-}:
+{ lib, mkGenericServer, mcman, jre, jre8, ... }:
+{ name ? "", src ? null, serverLocation ? null, hash ? "", meta ? { }, ... }:
 mkGenericServer {
   inherit name src serverLocation hash;
 
-  nativeBuildInputs = [
-    mcman
-    jre
-    jre8
-  ];
+  nativeBuildInputs = [ mcman jre jre8 ];
 
   buildInputs = [
     mcman
