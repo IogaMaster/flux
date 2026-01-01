@@ -3,9 +3,11 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
+    mcman.url = "github:deniz-blue/mcman";
   };
 
-  outputs = {nixpkgs, ...}: let
+  outputs = {nixpkgs, ...}@inputs: let
+    inherit (nixpkgs) lib;
     forAllSystems = function:
       nixpkgs.lib.genAttrs [
         "x86_64-linux"
@@ -20,16 +22,14 @@
       };
     });
 
-    packages = forAllSystems (pkgs: {
-      mcman = pkgs.callPackage ./pkgs/mcman {};
+    packages = lib.recursiveUpdate (forAllSystems (pkgs: {
       playit = pkgs.callPackage ./pkgs/playit {};
-    });
+    })) inputs.mcman.packages;
 
     nixosModules.flux = ./modules/flux;
     nixosModules.default = nixosModules.flux;
 
-    overlays.default = final: prev: {
-      mcman = final.callPackage ./pkgs/mcman {};
+    overlays = (final: prev: {
       playit = final.callPackage ./pkgs/playit {};
 
       mkGenericServer = final.callPackage ./builders/mkGenericServer.nix {};
@@ -37,6 +37,6 @@
       mkSteamServer = final.callPackage ./builders/mkSteamServer.nix {};
 
       fetchSteam = final.callPackage ./helpers/fetchSteam {};
-    };
+    } // inputs.mcman.overlays.default);
   };
 }
