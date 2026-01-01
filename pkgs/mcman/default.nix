@@ -8,15 +8,16 @@
   stdenv,
   darwin,
 }:
+
 rustPlatform.buildRustPackage rec {
   pname = "mcman";
-  version = "c22e50714254d02670a3678e3965ff70a4b86c5c";
+  version = "0.4.5";
 
   src = fetchFromGitHub {
-    owner = "ParadigmMC";
+    owner = "deniz-blue";
     repo = "mcman";
     rev = version;
-    hash = "sha256-Z3nKgHVRuACHSVJ/ju+qTTWx2vaOjSqXCUp24j1JGf8=";
+    hash = "sha256-/WIm2MFj2++QVCATDkYz2h4Jm+0RzxzVFIYrZubEgIQ=";
   };
 
   cargoLock = {
@@ -32,27 +33,26 @@ rustPlatform.buildRustPackage rec {
     pkg-config
   ];
 
-  buildInputs =
-    [
-      bzip2
-      zstd
-    ]
-    ++ lib.optionals stdenv.isDarwin [
-      darwin.apple_sdk.frameworks.CoreFoundation
-      darwin.apple_sdk.frameworks.CoreServices
-      darwin.apple_sdk.frameworks.Security
-    ];
+  buildInputs = [
+    bzip2
+    zstd
+  ] ++ lib.optionals stdenv.isDarwin [
+    darwin.apple_sdk.frameworks.CoreFoundation
+    darwin.apple_sdk.frameworks.CoreServices
+    darwin.apple_sdk.frameworks.Security
+    darwin.apple_sdk.frameworks.SystemConfiguration
+  ];
 
   env = {
     ZSTD_SYS_USE_PKG_CONFIG = true;
   };
 
-  meta = with lib; {
+  meta = {
     description = "Powerful Minecraft Server Manager CLI. Easily install jars (server, plugins & mods) and write config files. Docker and git support included";
-    homepage = "https://github.com/ParadigmMC/mcman";
-    changelog = "https://github.com/ParadigmMC/mcman/blob/${src.rev}/CHANGELOG.md";
-    license = licenses.gpl3Only;
-    maintainers = with maintainers; [iogamaster];
+    homepage = "https://github.com/deniz-blue/mcman";
+    changelog = "https://github.com/deniz-blue/mcman/blob/${src.rev}/CHANGELOG.md";
+    license = lib.licenses.gpl3Only;
+    maintainers = with lib.maintainers; [ iogamaster ];
     mainProgram = "mcman";
   };
 }
