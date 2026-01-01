@@ -5,17 +5,27 @@ mkGenericServer {
 
   nativeBuildInputs = [ mcman jre jre8 ];
 
-  buildInputs = [ mcman jre jre8 ];
+  buildInputs = [
+    mcman
+    jre
+    jre8
+  ];
+  buildPhase =
+    ''
+      HOME=$TMPDIR
+      CI=true # Better build logs
+    ''
+    + lib.optionalString (serverLocation != null) ''
+      cd ${serverLocation}
+    ''
+    + ''
+      mcman build -o $out
+    '';
 
-  buildPhase = ''
-    HOME=$TMPDIR
-    CI=true # Better build logs
-    cd $src
-  '' + lib.optionalString (serverLocation != null) ''
-    cd ${serverLocation}
-  '' + ''
-    mcman build -o $out
-  '';
+  installPhase =
+    ''
+      rm -vf $out/{,.}*.log
+    '';
 
   startCmd = "./start.sh";
 
