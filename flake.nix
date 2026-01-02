@@ -6,7 +6,7 @@
     mcman.url = "github:deniz-blue/mcman";
   };
 
-  outputs = { self, nixpkgs, ... }@inputs:
+  outputs = { self, nixpkgs, mcman, ... }@inputs:
     let
       inherit (nixpkgs) lib;
       forAllSystems = nixpkgs.lib.genAttrs [ "x86_64-linux" "aarch64-linux" ];
@@ -46,9 +46,11 @@
         let
           checkArgs = {
             pkgs = nixpkgs.legacyPackages.${system};
-            inherit self;
+            inherit self mcman;
           };
-        in { minecraft-basic = import ./tests/minecraft/basic checkArgs; });
+        in {
+          minecraft-vanilla = import ./tests/minecraft/vanilla.nix checkArgs;
+        });
 
     };
 }
